@@ -11,11 +11,11 @@ format:
 code-line-numbers: false
 message: false
 highlight-style: pygments
-footer: "[https://github.com/dicook/ResBaz](https://github.com/dicook/ResBaz/slides.html)"
+footer: "[https://dicook.github.io/ResBaz/slides.html](https://dicook.github.io/ResBaz/slides.html)"
 ---
 
 ```{r, include = FALSE}
-#| label: libraries-for-participants
+#| label: load-libraries
 library(tidyverse)
 library(colorspace)
 library(patchwork)
@@ -179,6 +179,14 @@ Reading data plots is <span style="color: #F5191C;">subjective</span>.
 ::: {.fragment style="margin-left:230px"} 
 <br><br><br> It is possible, and <span style="color: #3B99B1;"> here is how we do that ...</span>
 :::
+
+## Outline
+
+- Organising your data into tidy form
+- Mapping the variables to elements of the plot
+- Cognitive preinciples: briefly
+- Testing the strength of patterns in the plot
+- Testing which is the best design
 
 ## These are the tools you need
 
@@ -431,7 +439,7 @@ How are variables mapped to create this plot?
 ```{r}
 #| label: aus-tb
 #| fig-height: 2.5
-#| fig-alt: "Scatterplot of TB incidence (ranging from 900-1600) against years 1997-2021. There is a roughly linearly increasing pattern. "
+#| fig-alt: "Scatterplot of TB incidence (ranging from 900-1600) against years 1997-2021. It has 2 layers. Layer 1 is a set of 25 big solid circle points of which about 100% can be seen. Layer 2 is a lowess smoothed curve. Layer 2 has colour set to vivid red. There is a roughly linearly increasing pattern. "
 ggplot(tb_aus, 
        aes(x=year, 
            y=c_newinc)) + 
@@ -468,7 +476,7 @@ How are variables mapped to create this plot?
 ```{r}
 #| label: aus-tb-bar
 #| fig-height: 2.5
-#| fig-alt: "Scatterplot of TB incidence (ranging from 900-1600) against years 1997-2021. A loess trend line is added in red. There is a roughly linearly increasing pattern. "
+#| fig-alt: "Scatterplot of TB incidence (ranging from 900-1600) against years 1997-2021. It has 2 layers. Layer 1 is a set of 25 big solid circle points of which about 100% can be seen. Layer 2 is a lowess smoothed curve. Layer 2 has colour set to vivid red. There is a roughly linearly increasing pattern. "
 ggplot(tb_aus, 
        aes(x=year, 
        y=c_newinc)) + 
@@ -506,7 +514,7 @@ How are variables mapped to create this plot?
 #| label: penguins1
 #| fig-height: 3.5
 #| out-width: 80%
-#| fig-alt: "Scatterplot of flipper length ranging from 170-230 and bill length ranging from 30-60. Points are coloured by species. The three species form clusters, but they are not separated. Adelie is at low left, Gentoo is upper right, and Chinstrap is middle and mid-to-upper positions. "
+#| fig-alt: "This is an untitled chart with no subtitle or caption. It has x-axis flipper_length_mm with labels 170, 180, 190, 200, 210, 220 and 230. It has y-axis bill_length_mm with labels 40, 50 and 60. There is a legend indicating colour is used to show species, with 3 levels: Adelie shown as brilliant greenish blue colour,  Chinstrap shown as brilliant yellow colour and  Gentoo shown as vivid red colour. The chart is a set of 342 big solid circle points of which about 92% can be seen. It has alpha set to 0.8. The three species form clusters, but they are not separated. Adelie is at low left, Gentoo is upper right, and Chinstrap is middle and mid-to-upper positions. "
 ggplot(penguins, 
        aes(x=flipper_length_mm, 
            y=bill_length_mm, 
@@ -587,6 +595,7 @@ ggplot(penguins,
 #| echo: true
 #| code-fold: true
 #| code-line-numbers: "2,3,4,5"
+#| fig-alt: "This is an untitled chart with no subtitle or caption. The chart is comprised of 7 panels containing sub-charts, arranged horizontally. The panels represent different values of age. Each sub-chart has x-axis 'year' with labels 13, 15, 17, 19 and 21. Each sub-chart has y-axis with labels 0.00, 0.25, 0.50, 0.75 and 1.00. There is a legend indicating fill is used to show sex, with 2 levels: females shown as deep pink fill and males shown as light olive fill."
 ggplot(tb_aus_sa, 
        aes(x=year, 
            y=count, 
@@ -623,6 +632,7 @@ Observations: Relatively equal proportions, with more incidence among males in o
 #| echo: true
 #| code-fold: true
 #| code-line-numbers: "2,3,4,5,6"
+#| fig-alt: "The chart is comprised of 14 panels containing sub-charts, arranged in a grid. The panel rows represent different values of sex. The panel columns represent different values of age. There is a legend indicating colour is used to show sex, with 2 levels: females shown as deep pink colour and males shown as light olive colour. Each sub-chart has 2 layers. Layer 1 of is a set of 9 big solid circle points, and layer 2 is a lowess smoothed curve."
 ggplot(tb_aus_sa, 
        aes(x=year, 
            y=count, 
@@ -645,7 +655,7 @@ ggplot(tb_aus_sa,
 
 ::: {.fragment .f60}
 <br>
-Temporal trend is present in some groups.
+Small increasing temporal trend is present in early age groups, for both males and females. Also older groups, although numbers are much smaller.
 :::
 
 ## Tidy data to plot descriptions allows quick re-arrangment, and clearly shows relationship between plots {.center}
@@ -876,6 +886,7 @@ Is the model misspecified?
 ```{r}
 #| fig-width: 4
 #| fig-height: 4
+#| fig-alt: "Plot of residuals against fitted values shows a slight non-linear pattern. Two outliers, high residual but low fitted value affect the reading of the nonlinear pattern."
 cars_lm <- lm(mpg ~ hp, data = mtcars)
 cars_all <- augment(cars_lm)
 ggplot(cars_all, aes(x=.fitted, y=.resid)) + geom_point()
@@ -955,6 +966,7 @@ Is there a difference between the groups?
 ```{r}
 #| fig-width: 4
 #| fig-height: 4.5
+#| fig-alt: "This is an untitled chart with no subtitle or caption. It has x-axis flipper_length_mm with labels 170, 180, 190, 200, 210, 220 and 230. It has y-axis bill_length_mm with labels 40, 50 and 60. There is a legend indicating colour is used to show species, with 3 levels: Adelie shown as brilliant greenish blue colour,  Chinstrap shown as brilliant yellow colour and  Gentoo shown as vivid red colour. The chart is a set of 342 big solid circle points of which about 92% can be seen. It has alpha set to 0.8. The three species form clusters, but they are not separated. Adelie is at low left, Gentoo is upper right, and Chinstrap is middle and mid-to-upper positions. "
 ggplot(penguins, 
        aes(x=flipper_length_mm, 
            y=bill_length_mm, 
@@ -1017,6 +1029,7 @@ nasa_jan_98 <- nasa |>
 ```{r}
 #| eval: false
 #| echo: true
+#| fig-alt: "Tiled spatial map showing average January 1998 temperatures in Kelvin over Central America, the lower few states of the USA and the north part of South America. Country boundaries are overlaid. Warmer temperatures are seen in ocean regions. Land masses are cooler, particularly north America and the mountain region of South America."
 ggplot() + 
   geom_tile(DATA, 
     aes(x=LONGITUDE, 
@@ -1238,6 +1251,7 @@ Break any association by permuting (scrambling/shuffling/re-sampling) the CLASS 
 #| fig-width: 4
 #| fig-height: 8
 #| out-width: 60%
+#| fig-alt: "Top plot is the same as that plotted on slide 33. Bottom plot has points coloured on permuted class, and the clusters so not match the colors."
 p1 <- ggplot(penguins, 
        aes(x=flipper_length_mm, 
            y=bill_length_mm, 

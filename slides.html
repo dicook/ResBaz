@@ -267,6 +267,16 @@ Dianne Cook <br> Monash University
 <p><br><br><br> It is possible, and <span style="color: #3B99B1;"> here is how we do that …</span></p>
 </div>
 </section>
+<section id="outline" class="slide level2">
+<h2>Outline</h2>
+<ul>
+<li>Organising your data into tidy form</li>
+<li>Mapping the variables to elements of the plot</li>
+<li>Cognitive preinciples: briefly</li>
+<li>Testing the strength of patterns in the plot</li>
+<li>Testing which is the best design</li>
+</ul>
+</section>
 <section id="these-are-the-tools-you-need" class="slide level2">
 <h2>These are the tools you need</h2>
 <div class="{.columns]">
@@ -332,8 +342,8 @@ Dianne Cook <br> Monash University
 <div class="f50">
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div class="datatables html-widget html-fill-item" id="htmlwidget-b6132542e21dd78833f5" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-b6132542e21dd78833f5">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11"],["AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS"],[1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007],[1,0,0,3,1,1,0,0,0,1,3],[8,11,13,16,23,15,14,18,32,33,30],[24,22,40,35,20,20,10,16,27,35,33],[18,18,54,25,18,26,2,17,23,23,20],[13,13,52,24,18,19,11,15,11,21,15],[17,15,37,19,13,13,5,11,12,16,14],[28,31,49,49,35,34,30,32,30,43,37],[0,2,0,0,1,0,0,0,2,2,4],[10,19,10,15,21,15,9,6,18,18,26],[15,24,16,19,27,21,13,17,26,27,37],[9,15,18,12,16,15,3,5,11,14,20],[5,8,6,15,7,6,5,7,10,7,12],[10,2,2,5,8,4,4,3,6,9,7],[12,24,26,14,20,23,7,19,14,21,23]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>iso3<\/th>\n      <th>year<\/th>\n      <th>new_sp_m014<\/th>\n      <th>new_sp_m1524<\/th>\n      <th>new_sp_m2534<\/th>\n      <th>new_sp_m3544<\/th>\n      <th>new_sp_m4554<\/th>\n      <th>new_sp_m5564<\/th>\n      <th>new_sp_m65<\/th>\n      <th>new_sp_f014<\/th>\n      <th>new_sp_f1524<\/th>\n      <th>new_sp_f2534<\/th>\n      <th>new_sp_f3544<\/th>\n      <th>new_sp_f4554<\/th>\n      <th>new_sp_f5564<\/th>\n      <th>new_sp_f65<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"iso3","targets":1},{"name":"year","targets":2},{"name":"new_sp_m014","targets":3},{"name":"new_sp_m1524","targets":4},{"name":"new_sp_m2534","targets":5},{"name":"new_sp_m3544","targets":6},{"name":"new_sp_m4554","targets":7},{"name":"new_sp_m5564","targets":8},{"name":"new_sp_m65","targets":9},{"name":"new_sp_f014","targets":10},{"name":"new_sp_f1524","targets":11},{"name":"new_sp_f2534","targets":12},{"name":"new_sp_f3544","targets":13},{"name":"new_sp_f4554","targets":14},{"name":"new_sp_f5564","targets":15},{"name":"new_sp_f65","targets":16}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-d05faba994c1ba8c2554" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-d05faba994c1ba8c2554">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11"],["AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS"],[1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007],[1,0,0,3,1,1,0,0,0,1,3],[8,11,13,16,23,15,14,18,32,33,30],[24,22,40,35,20,20,10,16,27,35,33],[18,18,54,25,18,26,2,17,23,23,20],[13,13,52,24,18,19,11,15,11,21,15],[17,15,37,19,13,13,5,11,12,16,14],[28,31,49,49,35,34,30,32,30,43,37],[0,2,0,0,1,0,0,0,2,2,4],[10,19,10,15,21,15,9,6,18,18,26],[15,24,16,19,27,21,13,17,26,27,37],[9,15,18,12,16,15,3,5,11,14,20],[5,8,6,15,7,6,5,7,10,7,12],[10,2,2,5,8,4,4,3,6,9,7],[12,24,26,14,20,23,7,19,14,21,23]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>iso3<\/th>\n      <th>year<\/th>\n      <th>new_sp_m014<\/th>\n      <th>new_sp_m1524<\/th>\n      <th>new_sp_m2534<\/th>\n      <th>new_sp_m3544<\/th>\n      <th>new_sp_m4554<\/th>\n      <th>new_sp_m5564<\/th>\n      <th>new_sp_m65<\/th>\n      <th>new_sp_f014<\/th>\n      <th>new_sp_f1524<\/th>\n      <th>new_sp_f2534<\/th>\n      <th>new_sp_f3544<\/th>\n      <th>new_sp_f4554<\/th>\n      <th>new_sp_f5564<\/th>\n      <th>new_sp_f65<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"iso3","targets":1},{"name":"year","targets":2},{"name":"new_sp_m014","targets":3},{"name":"new_sp_m1524","targets":4},{"name":"new_sp_m2534","targets":5},{"name":"new_sp_m3544","targets":6},{"name":"new_sp_m4554","targets":7},{"name":"new_sp_m5564","targets":8},{"name":"new_sp_m65","targets":9},{"name":"new_sp_f014","targets":10},{"name":"new_sp_f1524","targets":11},{"name":"new_sp_f2534","targets":12},{"name":"new_sp_f3544","targets":13},{"name":"new_sp_f4554","targets":14},{"name":"new_sp_f5564","targets":15},{"name":"new_sp_f65","targets":16}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div>
@@ -374,8 +384,8 @@ Dianne Cook <br> Monash University
 <p><br></p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div class="datatables html-widget html-fill-item" id="htmlwidget-1376c69e82892ef0a6ee" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-1376c69e82892ef0a6ee">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126"],["AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS"],[2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2020,2020,2020,2020,2020,2020,2020,2020,2020,2020,2020,2020,2020,2020,2021,2021,2021,2021,2021,2021,2021,2021,2021,2021,2021,2021,2021,2021],["f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m"],["0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65"],[20,95,165,97,62,46,63,28,105,206,108,67,68,120,25,86,206,114,70,45,77,28,102,167,100,73,90,147,24,87,195,108,60,51,73,22,96,165,92,66,87,128,16,98,218,108,58,60,81,22,92,181,125,68,92,157,32,118,203,110,63,63,82,25,110,190,123,73,87,163,30,115,216,103,79,65,89,19,107,169,132,71,93,150,22,111,218,105,84,77,90,21,151,210,109,57,79,168,18,141,238,124,85,62,90,15,150,221,135,69,92,171,18,97,199,129,67,74,92,16,114,202,121,89,83,156]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>iso3<\/th>\n      <th>year<\/th>\n      <th>sex<\/th>\n      <th>age<\/th>\n      <th>count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"className":"dt-right","targets":[2,5]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"iso3","targets":1},{"name":"year","targets":2},{"name":"sex","targets":3},{"name":"age","targets":4},{"name":"count","targets":5}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-40daeba54cc36d60d74b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-40daeba54cc36d60d74b">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126"],["AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS","AUS"],[2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2013,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2014,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2015,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2016,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2017,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2019,2020,2020,2020,2020,2020,2020,2020,2020,2020,2020,2020,2020,2020,2020,2021,2021,2021,2021,2021,2021,2021,2021,2021,2021,2021,2021,2021,2021],["f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m","f","f","f","f","f","f","f","m","m","m","m","m","m","m"],["0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65","0-14","15-24","25-34","35-44","45-54","55-64","65"],[20,95,165,97,62,46,63,28,105,206,108,67,68,120,25,86,206,114,70,45,77,28,102,167,100,73,90,147,24,87,195,108,60,51,73,22,96,165,92,66,87,128,16,98,218,108,58,60,81,22,92,181,125,68,92,157,32,118,203,110,63,63,82,25,110,190,123,73,87,163,30,115,216,103,79,65,89,19,107,169,132,71,93,150,22,111,218,105,84,77,90,21,151,210,109,57,79,168,18,141,238,124,85,62,90,15,150,221,135,69,92,171,18,97,199,129,67,74,92,16,114,202,121,89,83,156]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>iso3<\/th>\n      <th>year<\/th>\n      <th>sex<\/th>\n      <th>age<\/th>\n      <th>count<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"dom":"t","columnDefs":[{"className":"dt-right","targets":[2,5]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"iso3","targets":1},{"name":"year","targets":2},{"name":"sex","targets":3},{"name":"age","targets":4},{"name":"count","targets":5}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div>
@@ -446,7 +456,7 @@ Dianne Cook <br> Monash University
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="slides_files/figure-revealjs/aus-tb-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%" alt="Scatterplot of TB incidence (ranging from 900-1600) against years 1997-2021. There is a roughly linearly increasing pattern. "></p>
+<p><img data-src="slides_files/figure-revealjs/aus-tb-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%" alt="Scatterplot of TB incidence (ranging from 900-1600) against years 1997-2021. It has 2 layers. Layer 1 is a set of 25 big solid circle points of which about 100% can be seen. Layer 2 is a lowess smoothed curve. Layer 2 has colour set to vivid red. There is a roughly linearly increasing pattern. "></p>
 </figure>
 </div>
 </div>
@@ -474,7 +484,7 @@ Dianne Cook <br> Monash University
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="slides_files/figure-revealjs/aus-tb-bar-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%" alt="Scatterplot of TB incidence (ranging from 900-1600) against years 1997-2021. A loess trend line is added in red. There is a roughly linearly increasing pattern. "></p>
+<p><img data-src="slides_files/figure-revealjs/aus-tb-bar-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%" alt="Scatterplot of TB incidence (ranging from 900-1600) against years 1997-2021. It has 2 layers. Layer 1 is a set of 25 big solid circle points of which about 100% can be seen. Layer 2 is a lowess smoothed curve. Layer 2 has colour set to vivid red. There is a roughly linearly increasing pattern. "></p>
 </figure>
 </div>
 </div>
@@ -501,7 +511,7 @@ Dianne Cook <br> Monash University
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="slides_files/figure-revealjs/penguins1-1.png" class="quarto-figure quarto-figure-center" style="width:80.0%" alt="Scatterplot of flipper length ranging from 170-230 and bill length ranging from 30-60. Points are coloured by species. The three species form clusters, but they are not separated. Adelie is at low left, Gentoo is upper right, and Chinstrap is middle and mid-to-upper positions. "></p>
+<p><img data-src="slides_files/figure-revealjs/penguins1-1.png" class="quarto-figure quarto-figure-center" style="width:80.0%" alt="This is an untitled chart with no subtitle or caption. It has x-axis flipper_length_mm with labels 170, 180, 190, 200, 210, 220 and 230. It has y-axis bill_length_mm with labels 40, 50 and 60. There is a legend indicating colour is used to show species, with 3 levels: Adelie shown as brilliant greenish blue colour,  Chinstrap shown as brilliant yellow colour and  Gentoo shown as vivid red colour. The chart is a set of 342 big solid circle points of which about 92% can be seen. It has alpha set to 0.8. The three species form clusters, but they are not separated. Adelie is at low left, Gentoo is upper right, and Chinstrap is middle and mid-to-upper positions. "></p>
 </figure>
 </div>
 </div>
@@ -577,7 +587,7 @@ Dianne Cook <br> Monash University
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-21-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%" alt="This is an untitled chart with no subtitle or caption. The chart is comprised of 7 panels containing sub-charts, arranged horizontally. The panels represent different values of age. Each sub-chart has x-axis 'year' with labels 13, 15, 17, 19 and 21. Each sub-chart has y-axis with labels 0.00, 0.25, 0.50, 0.75 and 1.00. There is a legend indicating fill is used to show sex, with 2 levels: females shown as deep pink fill and males shown as light olive fill."></p>
 </figure>
 </div>
 </div>
@@ -613,14 +623,14 @@ Dianne Cook <br> Monash University
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-22-1.png" class="quarto-figure quarto-figure-center" style="width:80.0%" alt="The chart is comprised of 14 panels containing sub-charts, arranged in a grid. The panel rows represent different values of sex. The panel columns represent different values of age. There is a legend indicating colour is used to show sex, with 2 levels: females shown as deep pink colour and males shown as light olive colour. Each sub-chart has 2 layers. Layer 1 of is a set of 9 big solid circle points, and layer 2 is a lowess smoothed curve."></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
 <div class="fragment f60">
-<p><br> Temporal trend is present in some groups.</p>
+<p><br> Small increasing temporal trend is present in early age groups, for both males and females. Also older groups, although numbers are much smaller.</p>
 </div>
 </section>
 <section id="tidy-data-to-plot-descriptions-allows-quick-re-arrangment-and-clearly-shows-relationship-between-plots" class="slide level2 center">
@@ -773,7 +783,7 @@ Dianne Cook <br> Monash University
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-30-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-30-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%" alt="Plot of residuals against fitted values shows a slight non-linear pattern. Two outliers, high residual but low fitted value affect the reading of the nonlinear pattern."></p>
 </figure>
 </div>
 </div>
@@ -822,7 +832,7 @@ Dianne Cook <br> Monash University
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-32-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%"></p>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-32-1.png" class="quarto-figure quarto-figure-center" style="width:100.0%" alt="This is an untitled chart with no subtitle or caption. It has x-axis flipper_length_mm with labels 170, 180, 190, 200, 210, 220 and 230. It has y-axis bill_length_mm with labels 40, 50 and 60. There is a legend indicating colour is used to show species, with 3 levels: Adelie shown as brilliant greenish blue colour,  Chinstrap shown as brilliant yellow colour and  Gentoo shown as vivid red colour. The chart is a set of 342 big solid circle points of which about 92% can be seen. It has alpha set to 0.8. The three species form clusters, but they are not separated. Adelie is at low left, Gentoo is upper right, and Chinstrap is middle and mid-to-upper positions. "></p>
 </figure>
 </div>
 </div>
@@ -984,7 +994,7 @@ Dianne Cook <br> Monash University
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-39-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%"></p>
+<p><img data-src="slides_files/figure-revealjs/unnamed-chunk-39-1.png" class="quarto-figure quarto-figure-center" style="width:60.0%" alt="Top plot is the same as that plotted on slide 33. Bottom plot has points coloured on permuted class, and the clusters so not match the colors."></p>
 </figure>
 </div>
 </div>
@@ -1212,7 +1222,7 @@ Dianne Cook <br> Monash University
 <p><br><br><br> Which plot is the most different? <br><br> <em>Raise your hand when you have chosen.</em></p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div class="countdown" id="timer_2631e4fa" data-update-every="1" tabindex="0" style="top:0.5;left:0;font-size:2rem;">
+<div class="countdown" id="timer_c92eeb9e" data-update-every="1" tabindex="0" style="top:0.5;left:0;font-size:2rem;">
 <div class="countdown-controls"><button class="countdown-bump-down">−</button><button class="countdown-bump-up">+</button></div>
 <code class="countdown-time"><span class="countdown-digits minutes">00</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">20</span></code>
 </div>
@@ -1279,7 +1289,7 @@ Dianne Cook <br> Monash University
 <p><br><br><br> Which plot is the most different? <br><br> <em>Raise your hand when you have chosen.</em></p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div class="countdown" id="timer_a9851f31" data-update-every="1" tabindex="0" style="top:0.5;left:0;font-size:2rem;">
+<div class="countdown" id="timer_9d138732" data-update-every="1" tabindex="0" style="top:0.5;left:0;font-size:2rem;">
 <div class="countdown-controls"><button class="countdown-bump-down">−</button><button class="countdown-bump-up">+</button></div>
 <code class="countdown-time"><span class="countdown-digits minutes">00</span><span class="countdown-digits colon">:</span><span class="countdown-digits seconds">20</span></code>
 </div>
@@ -1364,7 +1374,7 @@ Dianne Cook <br> Monash University
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p><a href="https://github.com/dicook/ResBaz/slides.html">https://github.com/dicook/ResBaz</a></p>
+<p><a href="https://dicook.github.io/ResBaz/slides.html">https://dicook.github.io/ResBaz/slides.html</a></p>
 </div>
 </div></div>
 
