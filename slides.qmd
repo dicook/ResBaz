@@ -184,7 +184,7 @@ Reading data plots is <span style="color: #F5191C;">subjective</span>.
 
 - Organising your data into tidy form
 - Mapping the variables to elements of the plot
-- Cognitive preinciples: briefly
+- Cognitive principles: briefly
 - Testing the strength of patterns in the plot
 - Testing which is the best design
 
