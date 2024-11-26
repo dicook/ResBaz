@@ -1,0 +1,1853 @@
+---
+title: "Creating effective data plots"
+author: "Dianne Cook <br> Monash University"
+format:
+  revealjs: 
+    theme: 
+      - default
+      - custom.scss
+    slide-number: c/t
+    chalkboard: true
+code-line-numbers: false
+message: false
+highlight-style: pygments
+footer: "[https://github.com/dicook/ResBaz](https://github.com/dicook/ResBaz/slides.html)"
+---
+
+```{r, include = FALSE}
+#| label: libraries-for-participants
+library(tidyverse)
+library(colorspace)
+library(patchwork)
+library(broom)
+library(palmerpenguins)
+library(ggbeeswarm)
+library(vcd)
+library(nullabor)
+library(MASS)
+library(colorspace)
+library(dslabs) # For stars data
+library(gstat)
+library(sf)
+library(sp)
+
+library(conflicted)
+conflicts_prefer(dplyr::filter)
+conflicts_prefer(dplyr::select)
+conflicts_prefer(dplyr::slice)
+conflicts_prefer(dplyr::rename)
+conflicts_prefer(dplyr::mutate)
+conflicts_prefer(dplyr::summarise)
+```
+
+```{r, include = FALSE}
+#| label: code-for-nice-slides
+library(DT)
+
+options(width = 200)
+knitr::opts_chunk$set(
+  fig.width = 3,
+  fig.height = 3,
+  fig.align = "center",
+  dev.args = list(bg = 'transparent'),
+  out.width = "100%",
+  fig.retina = 3,
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  cache = FALSE
+)
+theme_set(ggthemes::theme_gdocs(base_size = 12) +
+  theme(plot.background = 
+        element_rect(fill = 'transparent', colour = NA),
+        axis.line.x = element_line(color = "black", 
+                                   linetype = "solid"),
+        axis.line.y = element_line(color = "black", 
+                                   linetype = "solid"),
+        plot.title.position = "plot",
+        plot.title = element_text(size = 18),
+        panel.background  = 
+          element_rect(fill = 'transparent', colour = "black"),
+        legend.background = 
+          element_rect(fill = 'transparent', colour = NA),
+        legend.key        = 
+          element_rect(fill = 'transparent', colour = NA)
+  ) 
+)
+```
+
+```{r}
+#| echo: false
+#| eval: false
+# divergingx_hcl(palette="Zissou 1", n=10)
+# [1] "#3B99B1" "#40ABA5" "#6FB798" "#9FC095" "#C7C98A"
+# [6] "#EABE23" "#E8A419" "#E78802" "#EA6400" "#F5191C"
+# specplot(divergingx_hcl(palette="Zissou 1", n=10))
+```
+
+
+## Why [(1/3)]{.f50}
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+```{r}
+#| fig-width: 3
+#| fig-height: 3
+#| out-width: 100%
+cars_lm <- lm(mpg ~ hp, data = mtcars)
+cars_all <- augment(cars_lm)
+ggplot(cars_all, aes(x=.fitted, y=.resid)) + geom_point()
+```
+
+:::
+
+::: {.column width=50%}
+
+Is there any pattern in the residuals that indicate a problem with the model fit?
+
+<br>
+
+::: {.f90}
+Do we need to change the model specification?
+:::
+
+:::
+
+::::
+
+
+## Why [(2/3)]{.f50}
+
+
+```{r}
+#| label: wasps
+#| message: false
+#| warning: false
+#| fig-width: 6
+#| fig-align: center
+data(wasps)
+wasps <- wasps |> dplyr::select(-ID)
+wasps_lda <- as_tibble(predict(lda(Group~., data=wasps), dimen=2)$x)
+wasps_lda <- bind_cols(wasps, wasps_lda)
+ggplot(wasps_lda, aes(x=LD1, y=LD2, colour=Group)) +
+  geom_point() +
+  scale_colour_discrete_divergingx(palette = "Zissou 1") +   
+  theme(aspect.ratio=1)
+```
+
+<center>
+<br>
+Is there a difference between the species?
+
+</center>
+
+## Why [(3/3)]{.f50}
+
+<center>
+<br>
+Which is the best display to answer: what is distribution of thyroid cancer across Australia?
+
+</center>
+
+
+
+:::: {.columns}
+::: {.column}
+![](images/thyroid-choro-1.png)
+
+:::
+::: {.column}
+![](images/thyroid-hex-1.png)
+:::
+::::
+
+## What's the goal? 
+
+<br>
+
+Reading data plots is <span style="color: #F5191C;">subjective</span>. 
+
+::: {.fragment} 
+<br> Making decisions based on data visualisations is common, where <span style="color: #3B99B1;"> we need to be  objective </span>. 
+:::
+
+::: {.fragment style="margin-left:230px"} 
+<br><br><br> It is possible, and <span style="color: #3B99B1;"> here is how we do that ...</span>
+:::
+
+## These are the tools you need
+
+:::: {.columns]
+
+::: {.column width=45%}
+
+::: {.textbox}
+
+![](https://ggplot2.tidyverse.org/logo.png){width="150px"} 
+
+```{r}
+#| eval: false
+#| echo: true
+install.packages("ggplot2")
+```
+
+::: {.f60}
+or better yet:
+:::
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: false
+install.packages("tidyverse")
+```
+
+::: {.f60}
+
+- Define your plots using a grammar that maps variables in tidy data to elements of the plot.
+- Wrangle your data into tidy form for clarity of plot specification.
+:::
+
+:::
+
+:::
+
+::: {.column width=8%}
+<span style="color: #FFFFFF;"> space </span>
+:::
+
+::: {.column width=45%}
+::: {.textbox}
+
+![](https://dicook.github.io/nullabor/reference/figures/nullabor_hex.png){width="170px"}
+
+```{r}
+#| eval: false
+#| echo: true
+#| code-line-numbers: false
+install.packages("nullabor")
+```
+
+::: {.f60}
+- Compare your data plot to plots of null data.
+- This checks whether what we see is real or spurious.
+- Also allows for measuring the effectiveness of one plot design vs another.
+
+:::
+
+:::
+:::
+
+::::
+
+## Organising your data to enable mapping variables to graphical elements {.transition .center}
+
+## Tidy data
+
+
+![](https://cdn.myportfolio.com/45214904-6a61-4e23-98d6-b140f8654a40/6e297111-efb7-4555-93d2-085071d1853c_rw_1920.jpg?h=f1951b118eaddaaab8a572422bc16566){.absolute top=0 right=0 width="550"}
+
+<br><br><br><br>
+
+1. **Each variable forms a column**
+2. **Each observation forms a row**
+3. **Each type of observational unit forms a table.** If you have data on multiple levels (e.g. data about houses and data about the rooms within those houses), these should be in separate tables.
+
+::: {style="font-size: 40%;"}
+
+Illustrations from the Openscapes blog Tidy Data for reproducibility, efficiency, and collaboration by [Julia Lowndes and Allison Horst](https://allisonhorst.com/other-r-fun)
+:::
+
+
+## QUESTION {.transition .center}
+
+How would you get this data into tidy form?
+
+## Tuberculosis from WHO
+
+::: {.f50}
+
+```{r}
+#| message: false
+#| warning: false
+
+tb <- read_csv(here::here("data/TB_notifications_2023-08-21.csv"))
+
+tb_aus <- tb |>
+  filter(iso3 == "AUS") |>
+  filter(year > 1996)
+tb_aus |>
+  select(iso3, year, new_sp_m014:new_sp_m65, new_sp_f014:new_sp_f65) |>
+  filter(year < 2012) |>
+  slice_head(n=11) |> 
+  datatable(options = list(dom = 't'))
+```
+
+:::
+
+## Tidying 
+
+:::: {.columns}
+
+::: {.column width=49%}
+
+First get the data in tidy form
+
+```{r}
+#| echo: true
+tb_aus_sa <- tb_aus |>
+  filter(year > 2012) |>
+  select(iso3, year, 
+         newrel_f014:newrel_f65, 
+         newrel_m014:newrel_m65) |>
+  pivot_longer(cols=newrel_f014:newrel_m65,
+               names_to = "sex_age", 
+               values_to = "count") |>
+  filter(!is.na(count)) |>
+  separate(sex_age, into=c("stuff", 
+                           "sex_age")) |>
+  mutate(sex = str_sub(sex_age, 1, 1),
+         age = str_sub(sex_age, 2, 
+                       str_length(sex_age))) |>
+  mutate(age = case_when(
+    age == "014" ~ "0-14",
+    age == "1524" ~ "15-24",
+    age == "2534" ~ "25-34",
+    age == "3544" ~ "35-44",
+    age == "4554" ~ "45-54",
+    age == "5564" ~ "55-64",
+    age == "65" ~ "65")) |>
+  select(iso3, year, sex, age, count)
+```
+:::
+
+::: {.column width=49%}
+
+::: {.fragment}
+
+::: {.f50}
+<br>
+```{r}
+tb_aus_sa |> datatable(options = list(dom = 't'))
+```
+:::
+
+:::
+
+:::
+
+::::
+
+## Statistical data
+
+$$X = \left[ \begin{array}{rrrr}
+           X_{~1} & X_{~2} & ... & X_{~p} 
+           \end{array} \right] \\
+  = \left[ \begin{array}{rrrr}
+           X_{~11} & X_{~12} & ... & X_{~1p} \\
+           X_{~21} & X_{~22} & ... & X_{~2p} \\
+           \vdots & \vdots & \ddots& \vdots \\
+           X_{~n1} & X_{~n2} & ... & X_{~np}
+           \end{array} \right]$$
+
+- <span style="color: #3B99B1;">This is tidy data!</span>
+- You might also make assumptions about the distribution of each variable, e.g. $X_{~1} \sim N(0,1), ~~X_{~2} \sim \text{Exp}(1) ...$
+
+## Mapping
+
+In `ggplot2`, the variables from tidy data are explicitly mapped to elements of the plot, using `aesthetics`.
+
+:::: {.columns}
+
+::: {.column width=49%}
+::: {.f50}
+
+**Basic Mappings**
+
+- `x` and `y` to plot points in a two-dimensional space
+- `color`, `fill` to render as a color scale
+- `size` maps variable to size of object
+- `shape` maps variable to different shapes
+
+Depending on the `geom` different mappings are possible, `xmin`, `xend`, `linetype`, `alpha`, `stroke`, `weight` ...
+
+**Facets**
+
+Variables are used to subset (or condition)
+
+**Layers**
+
+Different data can be mapped onto the same plot, eg observations, and means
+
+
+:::
+:::
+
+::: {.column width=49%}
+::: {.fragment}
+**Example**
+
+```{r}
+#| echo: true
+#| eval: false
+ggplot(mpg, 
+       aes(
+         x=displ, 
+         y=hwy, 
+         color=class)) + 
+  geom_point()
+```
+
+::: {.f60}
+
+`displ` is mapped to `x`<br> 
+`hwy` is mapped to `y`<br> 
+`class` is mapped to `color`.
+:::
+
+:::
+
+:::
+
+::::
+
+## Common plot descriptions as scripts {.transition .center}
+
+
+## Example 1A
+
+:::: {.columns}
+
+::: {.column width=49%}
+
+How are variables mapped to create this plot?
+
+```{r}
+#| label: aus-tb
+#| fig-height: 2.5
+ggplot(tb_aus, 
+       aes(x=year, 
+           y=c_newinc)) + 
+  geom_point() +
+  scale_x_continuous("Year", 
+    breaks = seq(1980, 2020, 10), 
+    labels = c("80", "90", "00", "10", "20")) +
+  ylab("TB incidence") 
+```
+:::
+
+::: {.column width=49%}
+<br><br>
+```{r}
+#| label: aus-tb
+#| echo: true
+#| eval: false
+#| code-summary: "Code for AUS TB plot"
+#| code-fold: false
+#| code-line-numbers: "2,3,4"
+
+```
+:::
+
+::::
+
+## Example 1B
+
+:::: {.columns}
+
+::: {.column width=49%}
+
+How are variables mapped to create this plot?
+
+```{r}
+#| label: aus-tb-bar
+#| fig-height: 2.5
+ggplot(tb_aus, 
+       aes(x=year, 
+       y=c_newinc)) + 
+  geom_point() +
+  geom_smooth(se=F, colour="#F5191C") +
+  scale_x_continuous("Year", breaks = seq(1980, 2020, 10), labels = c("80", "90", "00", "10", "20")) +
+  ylab("TB incidence") 
+```
+:::
+
+::: {.column width=49%}
+<br><br>
+```{r}
+#| label: aus-tb-bar
+#| echo: true
+#| eval: false
+#| code-summary: "Code for AUS TB plot"
+#| code-fold: false
+#| code-line-numbers: "2,3,4,5"
+
+```
+:::
+
+::::
+
+## Example 2A
+
+:::: {.columns}
+
+::: {.column width=49%}
+
+How are variables mapped to create this plot?
+
+```{r}
+#| label: penguins1
+#| fig-height: 3.5
+#| out-width: 80%
+ggplot(penguins, 
+       aes(x=flipper_length_mm, 
+           y=bill_length_mm, 
+           color=species)) + 
+  geom_point(alpha=0.8) +
+  scale_color_discrete_divergingx(palette="Zissou 1") +
+  theme(legend.title = element_blank(), 
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.text = element_text(size="8"))
+```
+:::
+
+::: {.column width=49%}
+<br><br>
+```{r}
+#| label: penguins1
+#| echo: true
+#| eval: false
+#| code-summary: "Code for penguins plot"
+#| code-fold: false
+#| code-line-numbers: "2,3,4,5"
+```
+:::
+
+::::
+
+## Example 2B
+
+:::: {.columns}
+
+::: {.column width=49%}
+
+How are variables mapped to create this plot?
+
+```{r}
+#| label: penguins2
+#| fig-height: 3.5
+#| out-width: 80%
+ggplot(penguins, 
+       aes(x=flipper_length_mm, 
+           y=bill_length_mm, 
+           color=species)) + 
+  geom_density2d(alpha=0.8) +
+  scale_color_discrete_divergingx(palette="Zissou 1") +
+  theme(legend.title = element_blank(), 
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.text = element_text(size="8"))
+```
+:::
+
+::: {.column width=49%}
+<br><br>
+```{r}
+#| label: penguins2
+#| echo: true
+#| eval: false
+#| code-summary: "Code for penguins plot"
+#| code-fold: false
+#| code-line-numbers: "2,3,4,5"
+
+```
+:::
+
+::::
+
+
+## Easily re-plot different ways [(1/2)]{.f50}
+
+::: {style="font-size: 80%;"}
+
+```{r}
+#| fig-height: 2.5
+#| fig-width: 10
+#| out-width: 100%
+#| echo: true
+#| code-fold: true
+#| code-line-numbers: "2,3,4,5"
+ggplot(tb_aus_sa, 
+       aes(x=year, 
+           y=count, 
+           fill=sex)) + 
+  geom_col(position="fill") +
+  facet_wrap(~age, ncol=7) +
+  ylab("") +
+  scale_fill_discrete_divergingx(palette="ArmyRose") +
+  scale_x_continuous("year", 
+    breaks = seq(2013, 2021, 2), 
+    labels = c("13", "15", "17", "19", "21")) +
+  theme(legend.position = "bottom", 
+        legend.direction = "horizontal",
+        legend.title = element_blank(),
+        axis.text = element_text(size="10"))
+```
+
+:::
+
+::: {.fragment .f60}
+<br>
+Observations: Relatively equal proportions, with more incidence among males in older population. No clear temporal trend. 
+:::
+
+
+## Easily re-plot different ways [(2/2)]{.f50}
+
+::: {style="font-size: 80%;"}
+
+```{r}
+#| fig-height: 4
+#| fig-width: 10
+#| out-width: 80%
+#| echo: true
+#| code-fold: true
+#| code-line-numbers: "2,3,4,5,6"
+ggplot(tb_aus_sa, 
+       aes(x=year, 
+           y=count, 
+           colour=sex)) + 
+  geom_point() +
+  geom_smooth(se=F, alpha=0.7) +
+  facet_grid(sex~age, scales = "free_y") +
+  ylab("count") +
+  scale_colour_discrete_divergingx(palette="ArmyRose") +
+  scale_x_continuous("year", 
+    breaks = seq(2013, 2021, 2), 
+    labels = c("13", "15", "17", "19", "21")) +
+  theme(legend.position = "bottom", 
+        legend.direction = "horizontal",
+        legend.title = element_blank(),
+        axis.text = element_text(size="10"))
+```
+
+:::
+
+::: {.fragment .f60}
+<br>
+Temporal trend is present in some groups.
+:::
+
+## Tidy data to plot descriptions allows quick re-arrangment, and clearly shows relationship between plots {.center}
+
+
+
+
+
+## Cognitive principles {.transition .center}
+
+## Hierarchy of mappings 
+
+```{r}
+vis_spacing <- 'style="padding-left:20px;"'
+vis_spacing1 <- 'style="padding-left:10px;"'
+```
+
+<img src="images/task-position-common-scale-1.svg" width="200px"><img src="images/task-position-non-aligned-scale-1.svg" width="200px" `r vis_spacing1`><img src="images/task-length-1.svg"  width="200px" `r vis_spacing1`><img src="images/task-direction-1.svg"  width="200px" `r vis_spacing1`><img src="images/task-angle-1.svg"  width="200px" `r vis_spacing1`>
+
+<img src="images/task-area-1.svg"  width="200px"><img src="images/task-volume-1.svg"  width="200px" `r vis_spacing1`><img src="images/task-curvature-1.svg"  width="200px" `r vis_spacing1`><img src="images/task-texture.svg" `r vis_spacing1` width="200px"><img src="images/task-shape-1.svg"  width="200px" `r vis_spacing1`>
+
+Cleveland and McGill (1984)
+
+::: {.f50}
+<center>
+<br><br>Illustrations made by Emi Tanaka
+</center>
+:::
+
+## Hierarchy of mappings 
+
+:::: {.columns}
+
+::: {.column width=50%}
+1. Position - common scale (BEST)
+2. Position - nonaligned scale
+3. Length, direction, angle
+4. Area
+5. Volume, curvature
+6. Shading, color (WORST)
+:::
+
+::: {.column width=50% .fragment}
+1. scatterplot, barchart
+2. side-by-side boxplot, stacked barchart
+3. piechart, rose plot, gauge plot, donut, wind direction map, starplot
+4. treemap, bubble chart, mosaicplot
+5. chernoff face
+6. choropleth map
+
+:::
+
+::::
+
+## Proximity
+
+Place elements that you want to compare close to each other. If there are multiple comparisons to make, you need to decide which one is most important.
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+ggplot(tb_aus_sa, 
+       aes(x=year, 
+           y=count, 
+           colour=sex)) + 
+  geom_point() +
+  geom_smooth(se=F) +
+  facet_wrap(~age, ncol = 4) +
+  scale_color_discrete_divergingx(palette="Zissou 1") +
+  scale_x_continuous("year", 
+    breaks = seq(2013, 2021, 2), 
+    labels = c("13", "15", "17", "19", "21")) +
+  theme(axis.text = element_text(size="10")) +
+  ggtitle("Arrangement A")
+```
+:::
+
+::: {.column width=50%}
+
+```{r}
+#| fig-width: 7
+#| fig-height: 5
+ggplot(tb_aus_sa, 
+       aes(x = year, y = count, colour = age)) +
+  geom_line() + geom_point() +
+  facet_wrap(~sex, ncol = 2) +
+  scale_color_discrete_divergingx(palette="Zissou 1") +
+  scale_x_continuous("year", 
+    breaks = seq(2013, 2021, 2), 
+    labels = c("13", "15", "17", "19", "21")) +
+  theme(axis.text = element_text(size="10")) +
+  ggtitle("Arrangement B")
+```
+:::
+
+::::
+
+## Change blindness
+
+Making comparisons across plots requires the eye to jump from one focal point to another. It may result in not noticing differences. 
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+```{r}
+#| fig-width: 5
+#| fig-height: 3.5
+tb_aus_sa |>
+  filter(age %in% c("45-54", "55-64"),
+         sex == "f") |>
+  ggplot(mapping=aes(x=year, 
+                 y=count)) + 
+  geom_point() +
+  geom_smooth(aes(colour=age), se=F, method="lm") +
+  facet_wrap(~age, ncol = 2) +
+  scale_color_discrete_divergingx(palette="Geyser") +
+  scale_x_continuous("year", 
+    breaks = seq(2013, 2021, 2), 
+    labels = c("13", "15", "17", "19", "21")) +
+  theme(legend.position="none",
+        axis.text = element_text(size="10"))
+  
+```
+
+:::
+
+::: {.column width=50% .fragment .center}
+
+<br>
+```{r}
+#| fig-width: 3
+#| fig-height: 3
+#| out-width: 60%
+tb_aus_sa |>
+  filter(age %in% c("45-54", "55-64"),
+         sex == "f") |>
+  ggplot(mapping=aes(x=year, 
+                 y=count)) + 
+  geom_smooth(aes(colour=age), se=F, method="lm") +
+  scale_color_discrete_divergingx(palette="Geyser") +
+  scale_x_continuous("year", 
+    breaks = seq(2013, 2021, 2), 
+    labels = c("13", "15", "17", "19", "21")) +
+  theme(legend.position="none",
+        axis.text = element_text(size="10"))
+  
+```
+
+:::
+::::
+
+## Scaling
+
+For comparison of different patterns, consider the scale. Typically the scale should be the SAME in each plot.
+
+```{r}
+#| eval: false
+#| echo: true
+facet_wrap(..., scales="free_y")
+``` 
+
+## Statistical thinking {.transition .center}
+
+## Statistical thinking
+
+- Because the <span style="color: #3B99B1;"> plot </span> is specified using a functional mapping of the variables, it <span style="color: #3B99B1;"> is a statistic</span>. 
+- The null and alternative hypotheses are indicated from the plot description.
+- Applying the function to a dataset provides the observed value.
+
+
+## What is your plot testing? [(1/3)]{.f50}
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+<br>
+
+```{r}
+#| eval: false
+#| echo: true
+LM_FIT <- lm(VAR2 ~ VAR1, 
+             data = DATA)
+FIT_ALL <- augment(LM_FIT)
+ggplot(FIT_ALL, aes(x=.FITTED, 
+                    y=.RESID)) + 
+  geom_point()
+```
+
+<br>
+What will we  be assessing using this plot?
+
+:::
+
+::: {.column width=10%}
+:::
+
+::: {.column width=40%}
+
+::: {.fragment}
+Is the model misspecified? 
+
+::: {.f90}
+- non-linearity
+- heteroskedasticity
+- outliers/anomalies
+- non-normality
+- fitted value distribution
+:::
+:::
+
+:::
+
+::::
+
+
+## What is your plot testing? [(1/3)]{.f50}
+
+:::: {.columns}
+
+::: {.column width=60%}
+
+```{r}
+#| fig-width: 4
+#| fig-height: 4
+cars_lm <- lm(mpg ~ hp, data = mtcars)
+cars_all <- augment(cars_lm)
+ggplot(cars_all, aes(x=.fitted, y=.resid)) + geom_point()
+```
+
+:::
+
+::: {.column width=40%}
+
+What do you see?
+
+::: {.fragment}
+&cross; non-linearity <br>
+&check; heteroskedasticity <br>
+&cross; outliers/anomalies <br>
+&check; non-normality <br>
+&cross; fitted value distribution is uniform
+:::
+
+::: {.fragment}
+<br>
+<span style="color: #F5191C;"> Are you sure? </span>
+:::
+
+:::
+
+::::
+
+
+## What is your plot testing? [(2/3)]{.f50}
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+<br>
+
+```{r}
+#| eval: false
+#| echo: true
+ggplot(DATA, 
+       aes(x=VAR1, 
+           y=VAR2, 
+           color=CLASS)) + 
+  geom_point() 
+```
+
+<br>
+What will we  be assessing using this plot?
+
+:::
+
+::: {.column width=10%}
+:::
+
+::: {.column width=40%}
+
+::: {.fragment}
+<br>
+Is there a difference between the groups?
+
+- location
+- shape
+- outliers/anomalies
+:::
+
+:::
+
+::::
+
+## What is your plot testing? [(2/3)]{.f50}
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+```{r}
+#| fig-width: 4
+#| fig-height: 4.5
+ggplot(penguins, 
+       aes(x=flipper_length_mm, 
+           y=bill_length_mm, 
+           color=species)) + 
+  geom_point(alpha=0.8) +
+  scale_color_discrete_divergingx(palette="Zissou 1") +
+  theme(legend.title = element_blank(), 
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.text = element_text(size="8"))
+```
+
+<br>
+
+:::
+
+::: {.column width=10%}
+:::
+
+::: {.column width=40%}
+
+What do you see?
+
+::: {.fragment}
+There a difference between the groups
+
+&check; location <br>
+&cross; shape <br>
+&check; outliers/anomalies
+:::
+
+::: {.fragment}
+<br>
+<span style="color: #F5191C;"> Are you sure? </span>
+:::
+:::
+
+::::
+
+
+
+## What is your plot testing? [(3/3)]{.f50}
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+```{r}
+#| echo: false
+library(GGally)
+library(ggthemes)
+data(nasa)
+sth_america <- map_data("world") |>
+  filter(between(long, -115, -53), between(lat, -20.5, 41))
+nasa_jan_98 <- nasa |> 
+  filter(month == 1, year == 1998) |>
+  select(id, lat, long, surftemp)
+```
+
+```{r}
+#| eval: false
+#| echo: true
+ggplot() + 
+  geom_tile(DATA, 
+    aes(x=LONGITUDE, 
+        y=LATITUDE, 
+        fill=VAR1)) +
+  geom_path(MAP, 
+        aes(x=LONGITUDE, 
+            y=LATITUDE,
+            group=GROUP)) +
+  theme_map() 
+```
+
+<br>
+What will we  be assessing using this plot?
+
+:::
+
+::: {.column width=10%}
+:::
+
+::: {.column width=40%}
+
+::: {.fragment}
+<br>
+Is there a spatial trend?
+
+<br>
+Are there any spatial anomalies?
+
+:::
+
+:::
+
+::::
+
+## What is your plot testing? [(3/3)]{.f50}
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+```{r}
+#| fig-width: 6
+#| fig-height: 6.5
+#| echo: false
+ggplot() + 
+  geom_tile(data=nasa_jan_98, 
+    aes(x=long, y=lat, fill=surftemp)) +
+  geom_path(data=sth_america, 
+            aes(x=long, y=lat, group=group), 
+            colour="white", linewidth=1) +
+  scale_fill_viridis_c("", option = "magma") +
+  ggtitle("January 1998") +
+  theme_map() +
+  theme(legend.position = "bottom", 
+        plot.title = element_text(size = 24)) 
+```
+
+<br>
+
+:::
+
+::: {.column width=10%}
+:::
+
+::: {.column width=40%}
+
+What do you see?
+
+::: {.fragment}
+There are clusters of high and low temperature in different parts of the region.
+
+&check; clusters <br>
+&check; outliers/anomalies
+:::
+
+::: {.fragment}
+<br>
+<span style="color: #F5191C;"> Are you sure? </span>
+:::
+:::
+
+::::
+
+## Null hypothesis, example 1
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+<br>
+
+```{r}
+#| eval: false
+#| echo: true
+LM_FIT <- lm(VAR2 ~ VAR1, 
+             data = DATA)
+FIT_ALL <- augment(LM_FIT)
+ggplot(FIT_ALL, aes(x=.FITTED, 
+                    y=.RESID)) + 
+  geom_point()
+```
+
+<br>
+What is the null hypothesis?
+
+::: {.fragment}
+*There is no relationship between residuals and fitted values.* This is $H_o$.
+:::
+
+:::
+
+::: {.column width=5%}
+:::
+
+::: {.column width=45%}
+
+
+::: {.fragment .f80}
+<br><br><br>
+
+**Alternative hypothesis**, $H_a$:
+
+*There is some relationship*, which might be
+
+- non-linearity
+- heteroskedasticity
+- outliers/anomalies
+:::
+
+:::
+
+::::
+
+## Null hypothesis, example 2
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+<br>
+
+```{r}
+#| eval: false
+#| echo: true
+ggplot(DATA, 
+       aes(x=VAR1, 
+           y=VAR2, 
+           color=CLASS)) + 
+  geom_point()
+```
+
+<br>
+What is the null hypothesis?
+
+::: {.fragment}
+*There is no difference between the classes.* This is $H_o$.
+:::
+
+:::
+
+::: {.column width=5%}
+:::
+
+::: {.column width=45%}
+
+
+::: {.fragment .f80}
+<br><br><br>
+**Alternative hypothesis**, $H_a$:
+
+*There is some difference between the classes*, which might be
+
+- location
+- shape
+- outliers/anomalies
+:::
+
+:::
+
+::::
+
+## Creating null samples {.transition .center}
+
+## Creating null samples, example 1
+
+:::: {.columns}
+::: {.column width=50% .f80}
+
+```{r}
+#| eval: false
+#| echo: true
+ggplot(DATA, 
+       aes(x=VAR1, 
+           y=VAR2, 
+           color=CLASS)) + 
+  geom_point()
+```
+
+<br>
+
+$H_o$: *There is no difference between the classes.* 
+
+::: {.fragment}
+How would you generate null samples?
+:::
+
+
+::: {.fragment}
+<br>
+Break any association by permuting (scrambling/shuffling/re-sampling) the CLASS variable.
+:::
+
+:::
+::: {.column width=50%}
+
+::: {.fragment}
+```{r}
+#| fig-width: 4
+#| fig-height: 8
+#| out-width: 60%
+p1 <- ggplot(penguins, 
+       aes(x=flipper_length_mm, 
+           y=bill_length_mm, 
+           color=species)) + 
+  geom_point(alpha=0.8) +
+  scale_color_discrete_divergingx(palette="Zissou 1") +
+  ggtitle("Original") +
+  theme(legend.position = "none")
+set.seed(235)
+p2 <- ggplot(penguins, 
+       aes(x=flipper_length_mm, 
+           y=bill_length_mm, 
+           color=sample(species, replace = TRUE))) + 
+  geom_point(alpha=0.8) +
+  scale_color_discrete_divergingx(palette="Zissou 1") +
+  ggtitle("Permuted") +
+  theme(legend.position = "none")
+p1/p2
+```
+:::
+
+:::
+
+::::
+
+## Creating null samples, example 2
+
+:::: {.columns}
+::: {.column width=50% .f80}
+
+```{r}
+#| eval: false
+#| echo: true
+LM_FIT <- lm(VAR2 ~ VAR1, 
+             data = DATA)
+FIT_ALL <- augment(LM_FIT)
+ggplot(FIT_ALL, aes(x=.FITTED, 
+                    y=.RESID)) + 
+  geom_point()
+```
+
+::: {.fragment}
+$H_o$: *There is no relationship between residuals and fitted values.* 
+:::
+
+::: {.fragment}
+How would you generate null samples?
+:::
+
+::: {.fragment}
+<br>
+Break any association by 
+
+- permuting residuals,
+- or residual rotation, 
+- or simulate residuals from a normal distribution.
+:::
+
+:::
+::: {.column width=50%}
+
+::: {.fragment}
+```{r}
+#| fig-width: 3
+#| fig-height: 5.5
+#| out-width: 60%
+cars_lm <- lm(mpg ~ hp, data = mtcars)
+cars_all <- augment(cars_lm)
+set.seed(1235)
+ggplot(lineup(null_lm(mpg ~ hp, method="rotate"), 
+                    cars_all, n=2, pos=1), aes(x=.fitted, y=.resid)) + 
+  geom_point() +
+  facet_wrap(~.sample, ncol=1) +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank())
+```
+:::
+
+:::
+
+::::
+
+## Conducting a lineup test {.transition .center}
+
+## Steps
+
+1. Create a lineup of $m-1$ null plots + 1 data plot, where the data plot is randomly placed among nulls. Remove any distracting information, like tick labels, titles.
+2. Ask uninvolved observer(s) to pick the plot that is most different. (May need to use a crowd-sourcing service.)
+3. Compute the probability that the data plot was chosen, assuming it is no different from the null plots. This is the $p$-value.
+4. Decide to reject or fail to reject the null.
+
+## Lineup example 1 <span style="font-size: 70%;"> (1/2) </span>
+
+::: {.f60}
+```{r}
+#| code-fold: true
+#| echo: true
+#| fig-width: 12
+#| fig-height: 8
+#| out.width: 80%
+set.seed(241)
+ggplot(lineup(null_permute("species"), penguins, n=15), 
+       aes(x=flipper_length_mm, 
+           y=bill_length_mm, 
+           color=species)) + 
+  geom_point(alpha=0.8) +
+  facet_wrap(~.sample, ncol=5) +
+  scale_color_discrete_divergingx(palette="Zissou 1") +
+  theme(legend.position = "none",
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        panel.grid.major = element_blank())
+```
+:::
+
+## Lineup example 1 <span style="font-size: 70%;"> (2/2) </span>
+
+If 10 people are shown this lineup and all 10 pick plot 2, which is the data plot, the $p$-value will be 0.
+
+Generally, we can compute the probability that the data plot is chosen by $x$ out of $K$ observers, shown a lineup of $m$ plots, using a simulation approach that extends from a binomial distribution, with $p=1/m$.
+
+```{r}
+#| echo: true
+pvisual(10, 10, 15)
+```
+
+This means we would reject $H_o$ and conclude that there is a difference in the distribution of bill length and flipper length between the species of penguins. 
+
+## Lineup example 2 <span style="font-size: 70%;"> (1/2) </span>
+
+::: {.f60}
+```{r}
+#| code-fold: true
+#| echo: true
+#| fig-width: 9
+#| fig-height: 6
+#| out.width: 80%
+data(wasps)
+set.seed(258)
+wasps_l <- lineup(null_permute("Group"), wasps[,-1], n=15)
+wasps_l <- wasps_l |>
+  mutate(LD1 = NA, LD2 = NA)
+for (i in unique(wasps_l$.sample)) {
+  x <- filter(wasps_l, .sample == i)
+  xlda <- MASS::lda(Group~., data=x[,1:42])
+  xp <- MASS:::predict.lda(xlda, x, dimen=2)$x
+  wasps_l$LD1[wasps_l$.sample == i] <- xp[,1]
+  wasps_l$LD2[wasps_l$.sample == i] <- xp[,2]
+}
+ggplot(wasps_l, 
+       aes(x=LD1, 
+           y=LD2, 
+           color=Group)) + 
+  geom_point(alpha=0.8) +
+  facet_wrap(~.sample, ncol=5) +
+  scale_color_discrete_divergingx(palette="Zissou 1") +
+  theme(legend.position = "none",
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        panel.grid.major = element_blank())
+```
+:::
+
+## Lineup example 2 <span style="font-size: 70%;"> (2/2) </span>
+
+If 10 people are shown this lineup and 1 picked the data plot (position 6), which is the data plot, the $p$-value will be large.
+
+```{r}
+#| echo: true
+pvisual(1, 10, 15)
+```
+
+This means we would NOT reject $H_o$ and conclude that there is NO difference in the distribution of groups. 
+
+## Lineup example 3 <span style="font-size: 70%;"> (1/2) </span>
+
+:::: {.columns}
+
+::: {.column width=15%}
+<br><br>Which plot is the most different?
+:::
+
+::: {.column width=85%}
+
+```{r}
+#| fig-width: 8
+#| fig-height: 5.5
+#| out-width: 90%
+set.seed(357)
+ggplot(lineup(null_dist("temp", "exp", 
+  list(rate = 1 / mean(dslabs::stars$temp))), 
+                        stars, n=15),
+       aes(x=temp)) +
+  geom_density(fill="black", alpha=0.7) +
+  facet_wrap(~.sample, ncol=5, scales="free") +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank())
+```
+
+:::
+::::
+
+## Lineup example 3 <span style="font-size: 70%;"> (2/2) </span>
+
+:::: {.columns}
+
+::: {.column width=50%}
+
+Plot description was:
+
+```{r}
+#| eval: false
+#| echo: true
+ggplot(stars, aes(x=temp)) +
+  geom_density()
+```
+
+::: {.fragment}
+In particular, the researcher is interested to know if star temperature is a skewed distribution.
+:::
+
+::: {.fragment}
+
+$H_o: X\sim exp(\widehat{\lambda})$ <br>
+$H_a:$ it has a different distribution.
+:::
+
+:::
+
+::: {.column width=50% .fragment}
+
+::: {.fragment}
+Generate the lineup with:
+
+```{r}
+#| eval: false
+#| echo: true
+lineup(null_dist("temp", "exp", 
+  list(rate = 1 / 
+         mean(dslabs::stars$temp))), 
+  stars, n=15)
+```
+
+:::
+
+::: {.fragment}
+
+<br><br>Compute the $p$-value based on your responses to the lineup (previous slide).
+
+
+```{r}
+#| eval: false
+#| echo: true
+pvisual(n=??, k=??, m=15)
+```
+:::
+
+:::
+
+::::
+
+## Testing for best plot design {.transition .center}
+
+## Steps
+
+1. Decide on plot descriptions, say two possibilities.
+2. Using the same data, and same null data create lineups that only differ because of the plot description.
+3. Show each lineup to two samples of uninvolved observers (one observer cannot see both lineups).
+4. Compute the proportion of each sample who identified the data plot, this is the **signal strength** or statistical power of each plot design. Also can be evaluated on **time to detect** the data plot. 
+5. The plot with the greater value (or shorter time) is the best design (for that problem).
+
+## If your birthday is between Jan 1 and Jun 30, CLOSE YOUR EYES NOW {.transition .center}
+
+No peeking!
+
+##
+
+:::: {.columns}
+
+::: {.column style="width: 15%; font-size: 70%;"}
+<br><br><br> Which plot is the most different?
+<br><br> *Raise your hand when you have chosen.*
+
+```{r}
+countdown::countdown(0, 20, left=0, top=0.5, font_size = "2rem")
+```
+:::
+
+::: {.column width=85%}
+
+::: {.panel-tabset}
+
+## Blank
+
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 6
+#| out-width: 80%
+ggplot(lineup(null_permute('mpg'), mtcars, n=12), aes(x=19.2, y=3.325)) +
+  geom_text(aes(label = .sample), size=5) +
+  theme_void() +
+  facet_wrap(~.sample, ncol=4) +
+  theme( 
+        panel.background =
+         element_rect(fill='transparent', 
+         color = "black"), 
+        panel.border =
+         element_rect(fill='transparent', 
+         color = "black"))
+```
+
+## Plot design 1A
+
+
+```{r}
+#| fig-width: 8
+#| fig-height: 6
+#| out-width: 80%
+set.seed(601)
+ggplot(lineup(null_permute("year"), tb_aus, n=15), 
+       aes(x=year, y=c_newinc)) + 
+  geom_point() +
+  geom_smooth(se=F, colour="#F5191C") +
+  facet_wrap(~.sample, ncol=5) +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank())
+```
+
+## Plot design 1B
+
+```{r}
+#| fig-width: 8
+#| fig-height: 5
+#| out-width: 90%
+set.seed(601)
+ggplot(lineup(null_permute("year"), tb_aus, n=15), 
+       aes(x=year, y=c_newinc)) + 
+  geom_col(fill="#F5191C") +
+  facet_wrap(~.sample, ncol=5) +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank())
+```
+
+:::
+
+:::
+
+::::
+
+## Plot design example 1
+
+This is the pair of plot designs we are evaluating.
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 6
+#| fig-align: center
+#| out-width: 60%
+tb_aus <- tb |>
+  filter(iso3 == "AUS") |>
+  filter(year > 1996)
+p1 <- ggplot(tb_aus, aes(x=year, y=c_newinc)) + 
+  geom_point() +
+  geom_smooth(se=F, colour="#F5191C") +
+  scale_x_continuous("Year", breaks = seq(1980, 2020, 10), labels = c("80", "90", "00", "10", "20")) +
+  ylab("TB incidence") +
+  ggtitle("Plot A")
+
+p2 <- ggplot(tb_aus, aes(x=year, y=c_newinc)) + 
+  geom_col(fill="#F5191C") +
+  scale_x_continuous("Year", breaks = seq(1980, 2020, 10), labels = c("80", "90", "00", "10", "20")) +
+  ylab("TB incidence") +
+  ggtitle("Plot B")
+
+p1 + p2
+```
+
+Compute signal strength:
+
+```{r}
+#| eval: false
+#| echo: true
+?? / ??
+```
+
+## If your birthday is between Jul 1 and Dec 31, CLOSE YOUR EYES NOW {.transition .center}
+
+No peeking!
+
+
+##
+
+:::: {.columns}
+
+::: {.column style="width: 15%; font-size: 70%;"}
+<br><br><br> Which plot is the most different?
+<br><br> *Raise your hand when you have chosen.*
+
+```{r}
+countdown::countdown(0, 20, left=0, top=0.5, font_size = "2rem")
+```
+:::
+
+::: {.column width=85%}
+
+::: {.panel-tabset}
+
+## Blank
+
+```{r}
+#| echo: false
+#| fig-width: 9
+#| fig-height: 6
+#| out-width: 80%
+ggplot(lineup(null_permute('mpg'), mtcars, n=12), aes(x=19.2, y=3.325)) +
+  geom_text(aes(label = .sample), size=5) +
+  theme_void() +
+  facet_wrap(~.sample, ncol=4) +
+  theme( 
+        panel.background =
+         element_rect(fill='transparent', 
+         color = "black"), 
+        panel.border =
+         element_rect(fill='transparent', 
+         color = "black"))
+```
+
+## Plot design 2A
+
+```{r toy-spatial, out.width = "80%"}
+#| echo: false
+#| results: hide
+# Set up a simple example
+set.seed(945)
+x <- 1:24
+y <- 1:24
+xy <- expand.grid(x, y)
+d <- tibble(x=xy$Var1, y=xy$Var2) |>
+  mutate(v = x+2*y) 
+d_sf <- SpatialPointsDataFrame(d[,1:2],
+                   data.frame(d[,3]))
+vgm_mod <- vgm(psill=5, model = "Sph", range=20, nmax=30)
+d_dummy <- gstat(formula = v~1, dummy=TRUE, beta=0,
+           model=vgm_mod)
+d_err <- predict(d_dummy, d_sf, nsim=1)
+d <- d |>
+  mutate(e = d_err@data$sim1*3) |>
+  mutate(ve = v+e)
+```
+
+```{r}
+#| eval: false
+#| fig-width: 12
+#| fig-height: 4
+#| out-width: 100%
+obs <- ggplot(d, aes(x, y, fill = ve)) +
+  geom_tile() +
+  scale_fill_viridis_c("") +
+  theme(aspect.ratio = 1) +
+  ggtitle("Observed") +
+  theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank())
+trend <- ggplot(d, aes(x, y, fill = v)) +
+  geom_tile() +
+  scale_fill_viridis_c("", option = "magma") +
+  theme(aspect.ratio = 1) +
+  ggtitle("Trend") +
+  theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank())
+err <- ggplot(d, aes(x, y, fill = e)) +
+  geom_tile() +
+  scale_fill_distiller("", palette = "PRGn") +
+  theme(aspect.ratio = 1) +
+  ggtitle("Residual") +
+  theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank())
+obs + trend + err + plot_layout(ncol=3)
+```
+
+
+```{r}
+#| label: gen-nulls
+#| code-fold: true
+#| code-summary: generate-nulls
+#| results: hide
+#| fig-width: 9
+#| fig-height: 6
+#| out-width: 100%
+set.seed(953)
+d_null <- predict(d_dummy, d_sf, nsim=11)
+pos <- sample(1:12, 1)
+lineup_plots <- list()
+j <- 1
+for (i in 1:12) {
+  if (pos == i) { # plot data
+    p <- ggplot(d, aes(x, y, fill = scale(ve))) +
+           geom_tile() 
+  } 
+  else { # plot nulls
+    null_df <- tibble(x=d$x, y=d$y, v=d_null@data[,j])
+    p <- ggplot(null_df, aes(x, y, fill = scale(v))) +
+           geom_tile() 
+   j <- j + 1
+  }
+  p <- p +
+        scale_fill_viridis_c("", option = "magma") +
+        theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank())
+    
+  lineup_plots[[paste(i)]] <- p
+}
+wrap_plots(lineup_plots, ncol = 4)
+```
+
+
+## Plot design 2B
+
+```{r}
+#| fig-width: 9
+#| fig-height: 6
+#| out-width: 100%
+lineup_plots <- list()
+j <- 1
+for (i in 1:12) {
+  if (pos == i) { # plot data
+    p <- ggplot(d, aes(x, y, fill = scale(ve))) +
+           geom_tile() 
+  } 
+  else { # plot nulls
+    null_df <- tibble(x=d$x, y=d$y, v=d_null@data[,j])
+    p <- ggplot(null_df, aes(x, y, fill = scale(v))) +
+           geom_tile() 
+   j <- j + 1
+  }
+  p <- p +
+        #scale_fill_viridis_c("", option = "magma") +
+        theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank())
+    
+  lineup_plots[[paste(i)]] <- p
+}
+wrap_plots(lineup_plots, ncol = 4)
+```
+
+:::
+
+:::
+
+::::
+
+## Plot design example 2
+
+This is the pair of plot designs we are evaluating. Comparing colour palettes used for the spatial distribution of temperature.
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 3
+#| fig-align: center
+#| out-width: 60%
+p1 <- ggplot(d, aes(x, y, fill = ve)) +
+  geom_tile() +
+  scale_fill_viridis_c("", option = "magma") +
+  theme(aspect.ratio = 1) +
+  ggtitle("Observed") +
+  theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank()) +
+  ggtitle("Plot A")
+p2 <- ggplot(d, aes(x, y, fill = ve)) +
+  geom_tile() +
+  #scale_fill_viridis_c("") +
+  theme(aspect.ratio = 1) +
+  ggtitle("Observed") +
+  theme(legend.position = "none",
+              axis.text = element_blank(),
+              axis.title = element_blank()) +
+  ggtitle("Plot B")
+
+p1 + p2
+```
+
+Compute signal strength:
+
+```{r}
+#| eval: false
+#| echo: true
+?? / ??
+```
+
+
+## Key take-aways
+
+- [Re-arrange]{.monash-blue2} your data into tidy form. Conceptually, even if it's not feasible computationally.
+- [Define]{.monash-blue2} your plots using the grammar, conceptually even if the software you use doesn't support it.
+- [Utilise]{.monash-blue2} valuable cognitive principles: appropriate mapping, proximity and scale.
+- [Make null plots]{.monash-blue2} for comparison, the same plot description applied to null data. Null data by construction has no interesting pattern. 
+
+## To learn more
+
+::: {.f60}
+- Wickham, Cook, Hofmann, Buja (2010) Graphical Inference for Infovis, IEEE TVCG, https://doi.org/10.1109/TVCG.2010.161.
+- Hofmann, Follett, Majumder, Cook (2012) Graphical Tests for Power Comparison of Competing Designs, IEEE TVCG, https://doi.org/10.1109/TVCG.2012.230.
+- Buja, Cook, Hofmann, Lawrence, Lee EK, Swayne, Wickham (2009) Statistical inference for exploratory data analysis and model diagnostics, https://doi.org/10.1098/rsta.2009.0120.
+- Majumder, Hofmann, Cook (2013) Validation of visual statistical inference, applied to linear models, https://doi.org/10.1080/01621459.2013.808157.
+- VanderPlas, Rottger, Cook, Hofmann (2021) Statistical significance calculations for scenarios in visual inference, https://doi.org/10.1002/sta4.337.
+:::
+
+## Acknowledgements
+
+<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
+ 

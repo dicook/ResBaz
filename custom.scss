@@ -1,0 +1,75 @@
+/*-- scss:defaults --*/
+$body-font-size: 1.2rem !default;
+$headings-font-weight:  500 !default;
+$font-size-base: 1.2rem;
+
+/*-- scss:rules --*/
+h1, h2, h3, h4, h5, h6 {
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, .3);
+}
+
+/*-- scss:rules --*/
+.textbox {
+  margin: 1em 0;
+  padding: 5px;
+  border: 1px solid black;
+  border-radius: 2px;
+}
+
+.center-align h2 {
+  text-align: center !important
+}
+
+li {
+  line-height: 1;
+}
+
+.f80 {
+  font-size: 80%;
+}
+
+.f80 p {
+  line-height: 1.3;
+}
+
+.f70 {
+  font-size: 70%;
+}
+
+.f60 {
+  font-size: 60%;
+}
+
+.f50 {
+  font-size: 50%;
+}
+
+pre, code, .sourceCode {
+  font-size: 0.9em;
+}
+
+.reveal pre {
+  font-size: 0.9rem !important;
+}
+
+.reveal code {
+  font-size: 0.9em !important;
+}
+
+.transition {
+  background-color: #EAC024!important;
+  font-size: 150%;
+  text-align: center;
+}
+
+.monash-blue2, .monash-blue2 code, .monash-blue2 a { color: #027EB6!important; }
+.monash-purple2, .monash-purple2 code, .monash-purple2 a { color: #746FB2!important; }
+.monash-fuchsia2, .monash-fuchsia2 code, .monash-fuchsia2 a { color: #9651A0!important; }
+.monash-ruby2, .monash-ruby2 code, .monash-ruby2 a { color: #C8008F!important; }
+.monash-pink2, .monash-pink2 code, .monash-pink2 a { color: #ee64a4!important; }
+.monash-red2, .monash-red2 code, .monash-red2 a { color: #EE0220!important; }
+.monash-orange2, .monash-orange2 code, .monash-orange2 a { color: #D93F00!important; }
+.monash-umber2, .monash-umber2 code, .monash-umber2 a { color: #795549!important; }
+.monash-olive2, .monash-olive2 code, .monash-olive2 a { color: #6F7C4D!important; }
+.monash-green2, .monash-green2 code, .monash-green2 a { color: #008A25!important; }
+
