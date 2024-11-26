@@ -93,9 +93,11 @@ theme_set(ggthemes::theme_gdocs(base_size = 12) +
 ::: {.column width=50%}
 
 ```{r}
+#| label: mtcars-resid
 #| fig-width: 3
 #| fig-height: 3
 #| out-width: 100%
+#| fig-alt: "Plot of residuals against fitted values shows a slight non-linear pattern. Two outliers, high residual but low fitted value affect the reading of the nonlinear pattern."
 cars_lm <- lm(mpg ~ hp, data = mtcars)
 cars_all <- augment(cars_lm)
 ggplot(cars_all, aes(x=.fitted, y=.resid)) + geom_point()
@@ -127,6 +129,7 @@ Do we need to change the model specification?
 #| warning: false
 #| fig-width: 6
 #| fig-align: center
+#| fig-alt: "Scatterplot of first two linear discriminants, with points coloured by wasp species, F, G, Q, W. F and G are well-separated clusters but Q and W are adjoining."
 data(wasps)
 wasps <- wasps |> dplyr::select(-ID)
 wasps_lda <- as_tibble(predict(lda(Group~., data=wasps), dimen=2)$x)
@@ -155,11 +158,11 @@ Which is the best display to answer: what is distribution of thyroid cancer acro
 
 :::: {.columns}
 ::: {.column}
-![](images/thyroid-choro-1.png)
+![](images/thyroid-choro-1.png){alt="Choropleth map of thyroid cancer across Australian LGAs. High incidence appears to be around Brisbane and west of Sydney city."}
 
 :::
 ::: {.column}
-![](images/thyroid-hex-1.png)
+![](images/thyroid-hex-1.png){alt="Hexagon tile map of thyroid cancer across Australian LGAs. High incidence is seen across the Brisbane, Sydney and Perth areas. Some LGAs in Melbourne have higher values too."}
 :::
 ::::
 
@@ -297,6 +300,7 @@ First get the data in tidy form
 
 ```{r}
 #| echo: true
+#| code-line-numbers: "3,6,10,12"
 tb_aus_sa <- tb_aus |>
   filter(year > 2012) |>
   select(iso3, year, 
@@ -427,6 +431,7 @@ How are variables mapped to create this plot?
 ```{r}
 #| label: aus-tb
 #| fig-height: 2.5
+#| fig-alt: "Scatterplot of TB incidence (ranging from 900-1600) against years 1997-2021. There is a roughly linearly increasing pattern. "
 ggplot(tb_aus, 
        aes(x=year, 
            y=c_newinc)) + 
@@ -447,7 +452,6 @@ ggplot(tb_aus,
 #| code-summary: "Code for AUS TB plot"
 #| code-fold: false
 #| code-line-numbers: "2,3,4"
-
 ```
 :::
 
@@ -464,6 +468,7 @@ How are variables mapped to create this plot?
 ```{r}
 #| label: aus-tb-bar
 #| fig-height: 2.5
+#| fig-alt: "Scatterplot of TB incidence (ranging from 900-1600) against years 1997-2021. A loess trend line is added in red. There is a roughly linearly increasing pattern. "
 ggplot(tb_aus, 
        aes(x=year, 
        y=c_newinc)) + 
@@ -501,6 +506,7 @@ How are variables mapped to create this plot?
 #| label: penguins1
 #| fig-height: 3.5
 #| out-width: 80%
+#| fig-alt: "Scatterplot of flipper length ranging from 170-230 and bill length ranging from 30-60. Points are coloured by species. The three species form clusters, but they are not separated. Adelie is at low left, Gentoo is upper right, and Chinstrap is middle and mid-to-upper positions. "
 ggplot(penguins, 
        aes(x=flipper_length_mm, 
            y=bill_length_mm, 
@@ -540,6 +546,7 @@ How are variables mapped to create this plot?
 #| label: penguins2
 #| fig-height: 3.5
 #| out-width: 80%
+#| fig-alt: "Density plots of flipper length ranging from 170-230 and bill length ranging from 30-60. Points are coloured by species. The three species form clusters, but they are not separated. Adelie is at low left, Gentoo is upper right, and Chinstrap is middle and mid-to-upper positions. "
 ggplot(penguins, 
        aes(x=flipper_length_mm, 
            y=bill_length_mm, 
